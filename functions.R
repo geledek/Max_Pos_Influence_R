@@ -24,6 +24,10 @@ InitiateGraph <- function() {
   # V(g)$o <- as.numeric(rnorm(length(V(g)), mean = 0.5))
   #>norm mean = -0.5
   # V(g)$o <- as.numeric(rnorm(length(V(g)), mean = -0.5))
+  
+  # regulate values of opinion to [-1, 1]
+  V(g)$o <- ifelse(V(g)$o >  1,  1, V(g)$o)
+  V(g)$o <- ifelse(V(g)$o < -1, -1, V(g)$o)
 
   # opinion upon activation
   V(g)$activated <- as.logical(rep(FALSE, length(V(g))))
@@ -39,10 +43,10 @@ InitiateGraph <- function() {
   return(g)
 }
 
-Trial <- function(g, index) {
+Trial <- function(g, indices) {
   q <- queue(FALSE) #those node that have been activated but haven't updated its influence to neighbours
-  enqueue(q, index)
-  V(g)[index]$activated <- TRUE
+  enqueue(q, indices)
+  V(g)[indices]$activated <- TRUE
   while (length(q) > 0) {
     v <- dequeue(q);
     for (i in V(g)[nei(v, mode="out")]) {
