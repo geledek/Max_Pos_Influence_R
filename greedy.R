@@ -12,7 +12,7 @@ Greedy <- function(g, k) {
       if (v %in% S) next
       
       output <- Trial(g, c(S, v))
-      message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
+      #message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
       deltaV <- output$score - O
       if (deltaV > deltaMax) {
         deltaMax <- deltaV

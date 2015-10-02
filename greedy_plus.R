@@ -31,6 +31,7 @@ GreedyPlus <- function(g, k) {
     if (deltaMax == 0) {
       return(S)
     }
+    message("----------------------------------------select vertex ", u)
     S <- c(S, u)
     O <- oMax
     PlotPreConfig(gMax)

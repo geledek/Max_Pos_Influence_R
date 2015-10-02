@@ -12,8 +12,8 @@ InitiateGraph <- function() {
   g <- graph.edgelist(el[1:100,1:2])
   
   # Edge Weight
-  E(g)$w <- as.numeric(runif(length(g),min=0,max=1))
-  E(g)$w / strength(g, mode = "in")[get.edgelist(g)[,1]] #Normalize only the incoming edge
+  E(g)$w <- as.numeric(runif(length(E(g)),min=0,max=1))
+  E(g)$w = E(g)$w / strength(g, mode = "in",weights = E(g)$w)[get.edgelist(g)[,2]] #Normalize only the incoming edge
   
   # Activation Threshold
   V(g)$theta <- as.numeric(runif(length(V(g)), min = 0, max = 1))

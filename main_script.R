@@ -1,6 +1,10 @@
 source("functions.R")
 source("greedy.R")
+source("greedy_plus.R")
 
 g <- InitiateGraph()
 PlotPreConfig(g)
+message("Greedy")
 Greedy(g, 10)
+message("Greedy_plus")
+GreedyPlus(g,10)
