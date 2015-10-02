@@ -1,3 +1,6 @@
+library("igraph")
+source("queue.R")
+
 # R is passing by value, not by reference
 
 InitiateGraph <- function() {
