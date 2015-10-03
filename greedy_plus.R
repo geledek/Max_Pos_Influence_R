@@ -1,40 +1,39 @@
 GreedyPlus <- function(g, k) {
   S <- c()
   O <- 0
-  # Candidates
-  C <- rep(-1, length(V(g)))
-  Ov <- rep(0, length(V(g)))
-  
-  #dd <- data.frame(b = 1:length(V(g)), 
-  #                 x = V(g)$o)
-  #dd[ order(-dd[,2]), ]
-  
+  # Candidates and their respective marginal gain
+  C <- data.frame(v <- 1:length(V(g)),
+                  d <- rep(1000, length(V(g))))
   for (i in 1:k) {
-    deltaMax <- 0
-    gMax <- g
-    oMax <- O
-    u <- 0
+    message("trying ", i, "th time...")
+    selected <- FALSE
     
-    for (v in V(g)) {
-      if (v %in% S) next
+    for (j in 1:(length(C$v)+2)) {           # maximun length(C$v) trial to find candidate
+      output <- Trial(g, c(S, C[1,1]))       # update the highest piority candidate
+      C[1,2] <- output$score - O
+      message("---------------------tried ", C[1,1], "th vertex... old O=", O, " new O=", output$score)
       
-      output <- Trial(g, c(S, v))
-      deltaV <- output$score - O
-      if (deltaV > deltaMax) {
-        deltaMax <- deltaV
-        u <- v
-        gMax <- output$graph
-        oMax <- output$score
+      if (C[1,2] > C[2,2]) {
+        if (C[1,2] > 0) {
+          message("------------------------------------------------------select vertex ", C[1,1])
+          selected <- TRUE
+          S <- c(S, C[1,1])
+          O <- output$score
+          C <- C[-c(1), ]  
+        }
+        break
+      } else {
+        if (C[2,2] < 0) {  # if C$d[1] < C$d[2] and C$d[2] is even smaller than 
+          break            # 0, which means there won't be any candidate that 
+        }                  # can increase the overall gain
+        C <- C[order(-C[,2]), ]
       }
     }
     
-    if (deltaMax == 0) {
+    if (!selected) {
       return(S)
     }
-    message("----------------------------------------select vertex ", u)
-    S <- c(S, u)
-    O <- oMax
-    PlotPreConfig(gMax)
+    
   }
   return(S)
 }
