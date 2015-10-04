@@ -2,6 +2,7 @@ source("functions.R")
 source("greedy.R")
 source("greedy_plus.R")
 source("ovm_select.R")
+source("max_influence.R")
 
 g <- InitiateGraph(50) # pass number of edges as argument
 PlotPreConfig(g)
@@ -11,3 +12,5 @@ message("Greedy_plus")
 GreedyPlus(g,10)
 message("OVM-Potential Candidate Selection")
 OVMSelect(g,10,4)
+message("Max Influence")
+max_influence(g,10)
