@@ -3,13 +3,16 @@ source("queue.R")
 
 # R is passing by value, not by reference
 
-InitiateGraph <- function() {
+InitiateGraph <- function(n) {
   el <- read.csv(file.choose(), sep=" ")
+  if(missing(n)){
+    n <- length(el)
+  }
   el[,1] <- as.character(el[,1]) 
   el[,2] <- as.character(el[,2])
   el <- as.matrix(el) 
-  
-  g <- graph.edgelist(el[1:100,1:2])
+
+  g <- graph.edgelist(el[1:n,1:2])
   
   # Edge Weight
   E(g)$w <- as.numeric(runif(length(E(g)),min=0,max=1))
@@ -82,8 +85,8 @@ PlotPreConfig <- function(g) {
        vertex.label      = V(g)$id,    #!!!!!!!! for easy debugging, should be removed later !!!!!
        # vertex.label.dist = 0.5,
        vertex.color      = ifelse(V(g)$activated, "red", "lightblue"),
-       # edge.label        = E(g)$id,           #!!!!!!!! for easy debugging, should be removed later !!!!!
+       edge.label        = E(g)$id,           #!!!!!!!! for easy debugging, should be removed later !!!!!
        edge.curved       = 0.2,
        edge.width        = E(g)$w * 5,
-       edge.arrow.size   = 0.03)
+       edge.arrow.size   = 0.3)
 }
