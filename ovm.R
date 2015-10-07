@@ -63,17 +63,13 @@ OVMUpdate <- function(g, u) {
 
   while (length(q) > 0) {
     v <- dequeue(q)
-    for (i in V(g)[nei(v, mode="out")]) {
-      if (V(g)[i]$activated & V(g)[i]$r <= V(g)[v]$r) next
-
-      if (V(g)[i]$activated & V(g)[i]$r > V(g)[v]$r) { # check if vertex i can be activated earlier or the value should be changed
+    for (i in V(g)[nei(v, mode="out")][!(V(g)[nei(v, mode="out")]$activated & (V(g)[nei(v, mode="out")]$r <= V(g)[v]$r))]) {
+      # check if vertex i can be activated earlier or the value should be changed
+      if (V(g)[i]$activated & V(g)[i]$r > V(g)[v]$r) {
         maxR <- V(g)[i]$r
       }
-      if (!V(g)[i]$activated) { # check if vertex can be activated once v is added
+      if (!V(g)[i]$activated) {
         maxR <- max(V(g)[nei(i, mode="in")][V(g)[nei(i, mode="in")]$activated]$r) # activated neighbours that have the largest r
-        if (maxR == .Machine$integer.max) {
-          message("WTF?!?!?!")
-        }
         maxR <- maxR+1
       }
 

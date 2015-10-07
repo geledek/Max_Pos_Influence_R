@@ -15,9 +15,7 @@ Greedy <- function(g, k) {
     oMax <- O
     u <- 0
     
-    for (v in V(g)) {
-      if (v %in% S) next
-
+    for (v in V(g)[!(V(g) %in% S)]) {
       output <- GreedyUpdate(g, c(S, v))
       message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
       deltaV <- output$score - O
@@ -51,9 +49,7 @@ GreedyUpdate <- function(g, indices) {
   while (length(q) > 0) {
     v <- dequeue(q)
     currentR <- V(g)[v]$r + 1
-    for (i in V(g)[nei(v, mode="out")]) {
-      if (V(g)[i]$activated & V(g)[i]$r <= V(g)[v]$r) next
-
+    for (i in V(g)[nei(v, mode="out")][!(V(g)[nei(v, mode="out")]$activated & (V(g)[nei(v, mode="out")]$r <= V(g)[v]$r))]) {
       influencingNei <- V(g)[nei(i, mode="in")]$activated & (V(g)[nei(i, mode="in")]$r < currentR)
       theta <- sum( E(g)[to(i)]$w * influencingNei)
       if (theta >= V(g)[i]$theta) {
