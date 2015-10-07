@@ -29,11 +29,11 @@ GreedyPlus <- function(g, k) {
         C <- C[order(-C[,2]), ]
       }
     }
-    
+
     if (!selected) {
       return(S)
     }
-    
+
   }
   return(S)
 }

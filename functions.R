@@ -1,8 +1,6 @@
 library("igraph")
-source("queue.R")
 
 # R is passing by value, not by reference
-
 InitiateGraph <- function(n) {
   el <- read.csv(file.choose(), sep=" ")
   if(missing(n)){
@@ -45,37 +43,8 @@ InitiateGraph <- function(n) {
   for (i in E(g)) {
     E(g)[i]$id <- i
   }
-  
+
   return(g)
-}
-
-Trial <- function(g, indices) {
-  q <- queue(FALSE) #those node that have been activated but haven't updated its influence to neighbours
-  enqueue(q, indices)
-  V(g)[indices]$activated <- TRUE
-  while (length(q) > 0) {
-    v <- dequeue(q);
-    for (i in V(g)[nei(v, mode="out")]) {
-      if (V(g)[i]$activated) {
-        next
-      }
-      theta <- sum(E(g)[to(i)]$w * V(g)[nei(i, mode="in")]$activated)
-      if (theta >= V(g)[i]$theta) {
-        V(g)[i]$activated <- TRUE
-        V(g)[i]$o <- sum(V(g)[nei(i, mode="in")]$activated * E(g)[to(i)]$w * V(g)[nei(i, mode="in")]$o)
-        V(g)[i]$o <- ifelse(V(g)[i]$o > 1, 1, V(g)[i]$o)
-        V(g)[i]$o <- ifelse(V(g)[i]$o < -1, -1, V(g)[i]$o)
-        enqueue(q, i)
-      }
-    }
-  }
-  
-  output <- list("graph" = g, "score" = EvalGraph(g))
-  return(output)
-}
-
-EvalGraph <- function(g) {
-  return(sum(V(g)$activated * V(g)$o))
 }
 
 PlotPreConfig <- function(g) {
