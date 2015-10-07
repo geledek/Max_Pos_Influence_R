@@ -6,7 +6,6 @@ GreedyOVMUp <- function(g, k) {
   V(g)$r <- as.numeric(rep(.Machine$integer.max, length(V(g))))
   # activated opinion value
   V(g)$oActed <- as.numeric(rep(0, length(V(g))))
-  V(g)$preActed <- as.logical(rep(FALSE, length(V(g))))
   S <- c()
   O <- 0
   for (i in 1:k) {
@@ -38,7 +37,6 @@ GreedyOVMUp <- function(g, k) {
     S <- c(S, u)
     O <- oMax
     g <- gMax
-    V(g)$preActed <- V(g)$activated
     PlotPreConfig(g)
   }
   return(S)

@@ -1,35 +1,47 @@
 source("queue.R")
 
-OVMMain <- function(g, k, pc){
-  Q <- queue(FALSE)
-  S <- c()
-  C <- OVMSelect(g, k, pc)
-  for (u in C){
-    ### TO-DO
-    # compute S = O({u})
-    enqueue(Q, u)
-  }
+OVMSearch <- function(g, k, pc) {
+  S <- c();
+  O <- 0;
+  PC <- OVMSelect(g, k, pc) # Potential Candidates
+  Q <- data.frame(v <- PC, d <- rep(1000, length(PC)))
 
-  while (length(S) < k){
-    repeat{
-      u <- dequeue(Q)
-      OVMUpdateActivationStatus(u)
-      OVMUpdateOpition(G,L)
-      if(condition){
-        break
+  # setup
+  # round no.
+  V(g)$r <- as.numeric(rep(.Machine$integer.max, length(V(g))))
+  # activated opinion value
+  V(g)$oActed <- as.numeric(rep(0, length(V(g))))
+
+  # calculate initial delta
+  for (i in length(Q$v)) {
+    output <- OVMUpdate(g, Q[i, 1])
+    Q[i, 2] <- output$score - O
+  }
+  Q <- Q[order(-Q[,2]), ]
+
+  while (length(S) < k) {
+    message("trying ", length(S)+1, "th time...")
+    repeat {
+      output <- OVMUpdate(g, Q[1, 1])
+      delta <- output$score - O
+      if (delta > Q[2, 2]) {
+        # Q[1, 1] stays on top, just use it
+        if (delta <= 0) {
+          return(S)
+        }
+        message("select vertex ", Q[1, 1])
+        S <- c(S, Q[1, 1])
+        O <- output$score
+        Q <- Q[-c(1), ]
+        break # end repeat
+      } else {
+        Q <- Q[order(-Q[,2]), ]
       }
     }
 
-    ## TO-DO
-    if (thetau(S) <= 0){
-      return(S)
-    }
-
-    S <- c(S, u)
-    OVMUpdateActivationStatus(u)
-    OVMUpdateOpition(G,L)
-    return(S)
   }
+
+  return(S)
 }
 
 OVMSelect <- function(g, k, p) {
@@ -50,7 +62,7 @@ OVMSelect <- function(g, k, p) {
         P[v] <- o + n_active + n_inactive
     }
     P <- cbind(P, 1:length(P))
-    P <- P[order(-P[,1]),2][1:pmin(2^p*k, length(P))]
+    P <- P[order(-P[,1]),2][1:pmin(2^p*k, length(p[,1]))]
     return(P)
 }
 
