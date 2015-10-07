@@ -1,7 +1,7 @@
 source("functions.R")
 source("greedy.R")
 source("greedy_ovm_up.R")
-
+source("ovm_modified.R")
 
 g <- InitiateGraph(50) # pass number of edges as argument
 PlotPreConfig(g)

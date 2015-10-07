@@ -1,16 +1,16 @@
 source("queue.R")
 
 OVMSearch <- function(g, k, pc) {
-  S <- c();
-  O <- 0;
-  PC <- OVMSelect(g, k, pc) # Potential Candidates
-  Q <- data.frame(v <- PC, d <- rep(1000, length(PC)))
-
   # setup
   # round no.
   V(g)$r <- as.numeric(rep(.Machine$integer.max, length(V(g))))
   # activated opinion value
   V(g)$oActed <- as.numeric(rep(0, length(V(g))))
+
+  S <- c();
+  O <- 0;
+  PC <- OVMSelect(g, k, pc) # Potential Candidates
+  Q <- data.frame(v <- PC, d <- rep(1000, length(PC)))
 
   # calculate initial delta
   for (i in length(Q$v)) {
