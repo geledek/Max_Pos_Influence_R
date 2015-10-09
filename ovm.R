@@ -10,10 +10,10 @@ OVMSearch <- function(g, k, pc) {
   S <- c();
   O <- 0;
   PC <- OVMSelect(g, k, pc) # Potential Candidates
-  Q <- data.frame(v <- PC, d <- rep(1000, length(PC)))
+  Q <- data.frame(v <- PC, d <- rep(.Machine$integer.max, length(PC)))
 
   # calculate initial delta
-  for (i in length(Q$v)) {
+  for (i in 1:length(Q$v)) {
     output <- OVMUpdate(g, Q[i, 1])
     Q[i, 2] <- output$score - O
   }
@@ -23,15 +23,16 @@ OVMSearch <- function(g, k, pc) {
     message("trying ", length(S)+1, "th time...")
     repeat {
       output <- OVMUpdate(g, Q[1, 1])
-      delta <- output$score - O
-      if (delta > Q[2, 2]) {
-        # Q[1, 1] stays on top, just use it
-        if (delta <= 0) {
+      message("---------------------tried ", Q[1,1], "th vertex... old O=", O, " new O=", output$score)
+      Q[1, 2] <- output$score - O
+      if (Q[1, 2] >= Q[2, 2]) {
+        if (Q[1, 2] <= 0) {
           return(S)
         }
         message("select vertex ", Q[1, 1])
         S <- c(S, Q[1, 1])
         O <- output$score
+        g <- output$graph
         Q <- Q[-c(1), ]
         break # end repeat
       } else {
@@ -45,25 +46,20 @@ OVMSearch <- function(g, k, pc) {
 }
 
 OVMSelect <- function(g, k, p) {
-    C <- c()
-    P <- c()
-    o <- 0
-    for (v in V(g)) {
-        o_v <- V(g)[v]$o 
-
-        n_active <- sum(V(g)[nei(v, mode="out")][activated==TRUE]$o
-                    + V(g)[v]$o * E(g)[from(v)]$w
-                    * ((V(g)[nei(v, mode="out")]$activated==TRUE)*1))
-        
-        n_inactive <- sum((V(g)[nei(v, mode="out")][activated==FALSE]$o
-                        + V(g)[v]$o * E(g)[from(v)]$w*((V(g)[nei(v, mode="out")]$activated==FALSE)*1))
-                        * V(g)[v]$o * E(g)[from(v)]$w*((V(g)[nei(v, mode="out")]$activated==FALSE)*1)
-                        / strength(g, mode = "in",weights = E(g)$w)[V(g)[nei(v, mode="out")]])
-        P[v] <- o + n_active + n_inactive
-    }
-    P <- cbind(P, 1:length(P))
-    P <- P[order(-P[,1]),2][1:pmin(2^p*k, length(p[,1]))]
-    return(P)
+  P <- as.numeric(rep(.Machine$integer.min, length(V(g))))
+  for (v in V(g)) {
+      n_active <- sum(V(g)[nei(v, mode="out")][activated==TRUE]$o
+                  + V(g)[v]$o * E(g)[from(v)]$w
+                  * ((V(g)[nei(v, mode="out")]$activated==TRUE)*1))
+      
+      n_inactive <- sum((V(g)[nei(v, mode="out")][activated==FALSE]$o
+                      + V(g)[v]$o * E(g)[from(v)]$w*((V(g)[nei(v, mode="out")]$activated==FALSE)*1))
+                      * V(g)[v]$o * E(g)[from(v)]$w*((V(g)[nei(v, mode="out")]$activated==FALSE)*1)
+                      / strength(g, mode = "in",weights = E(g)$w)[V(g)[nei(v, mode="out")]])
+      P[v] <- V(g)[v]$o  + n_active + n_inactive
+  }
+  P <- cbind(P, 1:length(P))
+  return(P[order(-P[,1]),2][1:pmin(2^p*k, length(P)/2)])
 }
 
 OVMUpdate <- function(g, u) {
@@ -77,7 +73,7 @@ OVMUpdate <- function(g, u) {
     v <- dequeue(q)
     for (i in V(g)[nei(v, mode="out")][!(V(g)[nei(v, mode="out")]$activated & (V(g)[nei(v, mode="out")]$r <= V(g)[v]$r))]) {
       # check if vertex i can be activated earlier or the value should be changed
-      if (V(g)[i]$activated & V(g)[i]$r > V(g)[v]$r) {
+      if (V(g)[i]$activated & (V(g)[i]$r > V(g)[v]$r)) {
         maxR <- V(g)[i]$r
       }
       if (!V(g)[i]$activated) {

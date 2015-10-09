@@ -4,7 +4,7 @@ library("igraph")
 InitiateGraph <- function(n) {
   el <- read.csv(file.choose(), sep=" ")
   if(missing(n)){
-    n <- length(el)
+    n <- length(el[,1])
   }
   el[,1] <- as.character(el[,1]) 
   el[,2] <- as.character(el[,2])
@@ -54,7 +54,7 @@ PlotPreConfig <- function(g) {
        vertex.label      = V(g)$id,    #!!!!!!!! for easy debugging, should be removed later !!!!!
        # vertex.label.dist = 0.5,
        vertex.color      = ifelse(V(g)$activated, "red", "lightblue"),
-       edge.label        = E(g)$id,           #!!!!!!!! for easy debugging, should be removed later !!!!!
+       #edge.label        = E(g)$id,           #!!!!!!!! for easy debugging, should be removed later !!!!!
        edge.curved       = 0.2,
        edge.width        = E(g)$w * 5,
        edge.arrow.size   = 0.3)
