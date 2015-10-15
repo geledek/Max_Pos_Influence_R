@@ -9,17 +9,17 @@ GreedyOVMUp <- function(g, k) {
   S <- c()
   O <- 0
   for (i in 1:k) {
-    message("trying ", i, "th time...")
+    #message("trying ", i, "th time...")
     deltaMax <- 0
     gMax <- g
     oMax <- O
     u <- 0
 
-    for (v in V(g)) {
-      if (v %in% S) next
-
+    for (v in V(g)[!(V(g) %in% S)]) {
+      #if (v %in% S) next
+      
       output <- OVMUpdate(g, v)
-      message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
+      #message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
       deltaV <- output$score - O
       if (deltaV > deltaMax) {
         deltaMax <- deltaV
@@ -30,14 +30,14 @@ GreedyOVMUp <- function(g, k) {
     }
 
     if (deltaMax == 0) {
-      return(S)
+      return(list("seed" = S, "influence" = O))
     }
 
-    message("select vertex ", u)
+    #message("select vertex ", u)
     S <- c(S, u)
     O <- oMax
     g <- gMax
-    PlotPreConfig(g)
+    #PlotPreConfig(g)
   }
-  return(S)
+  return(list("seed" = S, "influence" = O))
 }

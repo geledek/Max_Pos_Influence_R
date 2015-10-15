@@ -9,7 +9,7 @@ Greedy <- function(g, k) {
   S <- c()
   O <- 0
   for (i in 1:k) {
-    message("trying ", i, "th time...")
+    #message("trying ", i, "th time...")
     deltaMax <- 0
     gMax <- g
     oMax <- O
@@ -17,7 +17,7 @@ Greedy <- function(g, k) {
     
     for (v in V(g)[!(V(g) %in% S)]) {
       output <- GreedyUpdate(g, c(S, v))
-      message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
+      #message("---------------------tried ", v, "th vertex... old O=", O, " new O=", output$score)
       deltaV <- output$score - O
       if (deltaV > deltaMax) {
         deltaMax <- deltaV
@@ -28,15 +28,15 @@ Greedy <- function(g, k) {
     }
 
     if (deltaMax == 0) {
-      return(S)
+      return(list("seed" = S, "influence" = O))
     }
 
-    message("select vertex ", u)
+    #message("select vertex ", u)
     S <- c(S, u)
     O <- oMax
-    PlotPreConfig(gMax)
+    #PlotPreConfig(gMax)
   }
-  return(S)
+  return(list("seed" = S, "influence" = O))
 }
 
 GreedyUpdate <- function(g, indices) {

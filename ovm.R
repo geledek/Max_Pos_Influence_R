@@ -20,16 +20,16 @@ OVMSearch <- function(g, k, pc) {
   Q <- Q[order(-Q[,2]), ]
 
   while (length(S) < k) {
-    message("trying ", length(S)+1, "th time...")
+    #message("trying ", length(S)+1, "th time...")
     repeat {
       output <- OVMUpdate(g, Q[1, 1])
-      message("---------------------tried ", Q[1,1], "th vertex... old O=", O, " new O=", output$score)
+      #message("---------------------tried ", Q[1,1], "th vertex... old O=", O, " new O=", output$score)
       Q[1, 2] <- output$score - O
       if (Q[1, 2] >= Q[2, 2]) {
         if (Q[1, 2] <= 0) {
-          return(S)
+          return(list("seed" = S, "influence" = O))
         }
-        message("select vertex ", Q[1, 1])
+        #message("select vertex ", Q[1, 1])
         S <- c(S, Q[1, 1])
         O <- output$score
         g <- output$graph
@@ -42,7 +42,7 @@ OVMSearch <- function(g, k, pc) {
 
   }
 
-  return(S)
+  return(list("seed" = S, "influence" = O))
 }
 
 OVMSelect <- function(g, k, p) {
