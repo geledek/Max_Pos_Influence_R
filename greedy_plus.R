@@ -1,9 +1,6 @@
 GreedyPlus <- function(g, k) {
-  # setup
-  # round no.
-  V(g)$r <- as.numeric(rep(.Machine$integer.max, length(V(g))))
-  # activated opinion value
-  V(g)$oActed <- as.numeric(rep(0, length(V(g))))
+  V(g)$r <- as.numeric(rep(.Machine$integer.max, length(V(g))))         # round no.
+  V(g)$oActed <- as.numeric(rep(0, length(V(g))))                       # activated opinion value
   
   S <- c();
   O <- 0;
