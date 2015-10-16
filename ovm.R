@@ -99,7 +99,8 @@ OVMUpdate <- function(g, u) {
 
       # check if the vertex can be activated from round V(g)[v]$r+1 to maxR
       for (r in (V(g)[v]$r+1):maxR) {
-        influencingNei <- V(g)[nei(i, mode="in")][V(g)[nei(i, mode="in")]$activated & (V(g)[nei(i, mode="in")]$r < r)]
+        activeNei <- V(g)[nei(i, mode="in")]$activated & (V(g)[nei(i, mode="in")]$r < r)
+        influencingNei <- V(g)[nei(i, mode="in")][activeNei]
         theta <- sum( E(g)[from(influencingNei) & to(i)]$w)
         if (theta >= V(g)[i]$theta) {
           V(g)[i]$activated <- TRUE
