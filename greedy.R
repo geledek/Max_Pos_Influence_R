@@ -47,7 +47,7 @@ GreedyUpdate <- function(g, indices) {
     v <- dequeue(q)
     currentR <- V(g)[v]$r + 1
     for (i in V(g)[nei(v, mode="out")][!(V(g)[nei(v, mode="out")]$activated & (V(g)[nei(v, mode="out")]$r <= V(g)[v]$r))]) {
-      influencingNei <- V(g)[nei(i, mode="in")][V(g)[nei(i, mode="in")]$activated & (V(g)[nei(i, mode="in")]$r < r)]$id
+      influencingNei <- V(g)[nei(i, mode="in")][V(g)[nei(i, mode="in")]$activated & (V(g)[nei(i, mode="in")]$r < r)]
       theta <- sum( E(g)[from(influencingNei) & to(i)]$w)
       if (theta >= V(g)[i]$theta) {
         V(g)[i]$activated <- TRUE
